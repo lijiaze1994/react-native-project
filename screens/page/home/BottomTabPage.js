@@ -18,70 +18,73 @@ import HomePage from './HomePage';
 import FollowPage from '../follow/FollowPage';
 import NewsPage from '../news/NewsPage';
 import MyPage from '../my/MyPage';
+import DynamicTabNavigator from '../../route/DynamicTabNavigator';
 
 
 export default class BottomTabPage extends Component {
-
-  _BottomTab(){
-    return createAppContainer(createBottomTabNavigator({
-        HomePage:{
-          screen:HomePage,
-          navigationOptions:{
-            tabBarLabel:'首页',
-            tabBarIcon:({tintColor,focused}) => (
-              <Entypo
-                name={'home'}
-                size={26}
-                style={{color:tintColor}}
-              />
-            )
-          }
-        },
-        NewsPage:{
-          screen:NewsPage,
-          navigationOptions:{
-            tabBarLabel:'热点',
-            tabBarIcon:({tintColor,focused}) => (
-                <MaterialIcons
-                    name={'whatshot'}
-                    size={26}
-                    style={{color:tintColor}}
-                />
-            )
-          }
-        },
-        FollowPage:{
-          screen:FollowPage,
-          navigationOptions:{
-            tabBarLabel:'关注',
-            tabBarIcon:({tintColor,focused}) => (
-                <AntDesign
-                    name={'message1'}
-                    size={26}
-                    style={{color:tintColor}}
-                />
-            )
-          }
-        },
-        MyPage:{
-          screen:MyPage,
-          navigationOptions:{
-            tabBarLabel:'我的',
-            tabBarIcon:({tintColor,focused}) => (
-                <FontAwesome5
-                    name={'user'}
-                    size={26}
-                    style={{color:tintColor}}
-                />
-            )
-          }
-        }
-    }))
+  constructor(props){
+    super(props);
   }
+  // _BottomTab(){
+  //   return createAppContainer(createBottomTabNavigator({
+  //       HomePage:{
+  //         screen:HomePage,
+  //         navigationOptions:{
+  //           tabBarLabel:'首页',
+  //           tabBarIcon:({tintColor,focused}) => (
+  //             <Entypo
+  //               name={'home'}
+  //               size={26}
+  //               style={{color:tintColor}}
+  //             />
+  //           )
+  //         }
+  //       },
+  //       NewsPage:{
+  //         screen:NewsPage,
+  //         navigationOptions:{
+  //           tabBarLabel:'热点',
+  //           tabBarIcon:({tintColor,focused}) => (
+  //               <MaterialIcons
+  //                   name={'whatshot'}
+  //                   size={26}
+  //                   style={{color:tintColor}}
+  //               />
+  //           )
+  //         }
+  //       },
+  //       FollowPage:{
+  //         screen:FollowPage,
+  //         navigationOptions:{
+  //           tabBarLabel:'关注',
+  //           tabBarIcon:({tintColor,focused}) => (
+  //               <AntDesign
+  //                   name={'message1'}
+  //                   size={26}
+  //                   style={{color:tintColor}}
+  //               />
+  //           )
+  //         }
+  //       },
+  //       MyPage:{
+  //         screen:MyPage,
+  //         navigationOptions:{
+  //           tabBarLabel:'我的',
+  //           tabBarIcon:({tintColor,focused}) => (
+  //               <FontAwesome5
+  //                   name={'user'}
+  //                   size={26}
+  //                   style={{color:tintColor}}
+  //               />
+  //           )
+  //         }
+  //       }
+  //   }))
+  // }
   render() {
     RouteUtil.navigation = this.props.navigation;
-    const Tab = this._BottomTab();
-    return <Tab />;
+    // const Tab = this._BottomTab();
+    return <DynamicTabNavigator />;
   }
 }
 

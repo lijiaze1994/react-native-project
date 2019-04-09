@@ -9,13 +9,18 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
-
-export default class NewsPage extends Component {
+import {connect} from 'react-redux';
+import  actions from '../../action/index';
+class NewsPage extends Component {
 
   render() {
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>NewsPage!</Text>
+        <Text style={styles.welcome}>News2Page!</Text>
+        <Text style={styles.welcome} onPress={() => {
+          this.props.onThemeChange('#096');
+        }}>改变底部颜色</Text>
       </View>
     );
   }
@@ -39,3 +44,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const mapStateToProps = state =>({});
+const mapDispatchToProps = dispatch =>({
+  onThemeChange: theme=>dispatch(actions.onThemeChange(theme))
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(NewsPage)

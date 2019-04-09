@@ -9,13 +9,20 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
+import { connect } from 'react-redux';
+import actions from "../../action";
 
-export default class MyPage extends Component {
+class MyPage extends Component {
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>MyPage!</Text>
+        <Text onPress={()=>{
+            this.props.onThemeChange('pink');
+        }}>
+          改变底部颜色
+        </Text>
       </View>
     );
   }
@@ -39,3 +46,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const mapStateToProps = state => ({});
+const mapDispatchToProps = dispatch => ({
+    onThemeChange: theme => dispatch(actions.onThemeChange(theme))
+});
+export default connect(mapStateToProps,mapDispatchToProps)(MyPage);

@@ -12,26 +12,57 @@ import { createMaterialTopTabNavigator,createAppContainer } from 'react-navigati
 import RouteUtil from "../../route/routeUtil";
 
 export default class HomePage extends Component {
+  constructor(props){
+    super(props);
+    this.tabNames = ['JavaScript','React-Native','PHP','Linux','IOS','Android'];
+  }
+
+  _genTabs(){
+    const tabs={};
+    this.tabNames.forEach((item,index)=>{
+        tabs[`tab${index}`] = {
+          screen: props => <ReactNative {...props} tabLabel={item}/>,
+          navigationOptions:{
+            title:item,
+          }
+        }
+    });
+    return tabs;
+  }
   render() {
-    const TopTab = createAppContainer(createMaterialTopTabNavigator({
-      HomePageTabOne:{
-        screen :  HomePageTab,
-        navigationOptions:{
-          title:'React-Native'
-        }
-      },
-      HomePageTabTwo:{
-        screen :  HomePageTab,
-        navigationOptions:{
-          title:'JavaScript'
-        }
-      }
-    }));
+    const TopTab = createAppContainer(
+        createMaterialTopTabNavigator(
+            this._genTabs(),{
+              tabBarOptions:{
+                  upperCaseLabel:false,//标签是否大写
+                  scrollEnabled:true, //是否支持选项卡滚动
+                  style:{
+                    backgroundColor:'#678',
+                  },
+                  indicatorStyle:styles.indicatorStyle,
+                  labelStyle:styles.labelStyle
+              }
+            }
+        ));
     return <TopTab />;
   }
 }
 
-class HomePageTab extends Component {
+class ReactNative extends Component {
+  render() {
+    const { tabLabel } = this.props;
+    return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>{tabLabel}!</Text>
+          <Text onPress={()=>{
+            RouteUtil.goPage({},"DetailPage")
+          }}>ReactNative</Text>
+        </View>
+    );
+  }
+}
+
+class JavaScript extends Component {
   render() {
     const { tabLaber } = this.props;
     return (
@@ -39,12 +70,24 @@ class HomePageTab extends Component {
           <Text style={styles.welcome}>{tabLaber}!</Text>
           <Text onPress={()=>{
             RouteUtil.goPage({},"DetailPage")
-          }}>跳转</Text>
+          }}>JavaScript</Text>
         </View>
     );
   }
 }
-
+class Linux extends Component {
+  render() {
+    const { tabLaber } = this.props;
+    return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>{tabLaber}!</Text>
+          <Text onPress={()=>{
+            RouteUtil.goPage({},"DetailPage")
+          }}>Linux</Text>
+        </View>
+    );
+  }
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -57,9 +100,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  indicatorStyle:{
+    height:2,
+    backgroundColor:'#fff'
   },
+  labelStyle:{
+    fontSize: 13,
+    marginTop:6,
+    marginBottom:6
+  }
 });

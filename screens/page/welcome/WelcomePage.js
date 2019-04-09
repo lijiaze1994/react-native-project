@@ -18,7 +18,7 @@ export default class WelcomePage extends Component{
     setTimeout(() =>{
         const { navigation } = this.props;
         navigation.navigate("Main");
-    },5000)
+    },1000)
   }
   render() {
 
