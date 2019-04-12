@@ -98,7 +98,7 @@ class DynamicTabNavigator extends Component {
     )
   }
   render() {
-    RouteUtil.navigation = this.props.navigation;
+    // RouteUtil.navigation = this.props.navigation;
     const Tab = this._BottomTab();
     return <Tab />;
   }

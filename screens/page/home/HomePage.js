@@ -7,9 +7,16 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, ActivityIndicator, View,FlatList,RefreshControl,Text} from 'react-native';
+import {connect} from 'react-redux';
+import actions from '../../action/index';
 import { createMaterialTopTabNavigator,createAppContainer } from 'react-navigation';
 import RouteUtil from "../../route/routeUtil";
+import Toast from 'react-native-easy-toast';
+import HomeItem from '../../common/HomeItem';
+const URL = 'https://api.github.com/search/repositories?q=';
+const QUERY_STR = '&sort=stars';
+const THEME_COLOR='blue';
 
 export default class HomePage extends Component {
   constructor(props){
@@ -21,7 +28,7 @@ export default class HomePage extends Component {
     const tabs={};
     this.tabNames.forEach((item,index)=>{
         tabs[`tab${index}`] = {
-          screen: props => <ReactNative {...props} tabLabel={item}/>,
+          screen: props => <HomeTabPage {...props} tabLabel={item}/>,
           navigationOptions:{
             title:item,
           }
@@ -47,53 +54,114 @@ export default class HomePage extends Component {
     return <TopTab />;
   }
 }
+const pageSize = 10;
+class HomeTab extends Component {
+    constructor(props){
+        super(props);
+        const { tabLabel } = this.props;
+        this.storeName = tabLabel
+    }
+    componentDidMount() {
+        this.loadData();
+    }
+    loadData(LoadMore){
+        const { onLoadHomeData ,onLoadMoreHome} = this.props;
+        const store = this._store();
+        const url = this.genFetchUrl(this.storeName);
+        if (LoadMore){
+            onLoadMoreHome(this.storeName,++store.pageIndex,pageSize,store.items,callback=>{
+               this.refs.toast.show('没有更多了');
+           })
+        }else{
+            onLoadHomeData(this.storeName,url,pageSize)
+        }
+    }
 
-class ReactNative extends Component {
-  render() {
-    const { tabLabel } = this.props;
-    return (
-        <View style={styles.container}>
-          <Text style={styles.welcome}>{tabLabel}!</Text>
-          <Text onPress={()=>{
-            RouteUtil.goPage({},"DetailPage")
-          }}>ReactNative</Text>
-        </View>
-    );
-  }
-}
+    _store(){
+        const {home } = this.props;
+        let store = home[this.storeName];
+        if (!store){
+            store={
+                items:[],
+                isLoading:false,
+                projectModes:[],
+                hideLoadingMore:true
+            }
+        }
+        return store;
+    }
 
-class JavaScript extends Component {
-  render() {
-    const { tabLaber } = this.props;
+    genFetchUrl(key){
+        return URL + key + QUERY_STR;
+    }
+    genIndicator(){
+        return this._store().hideLoadingMore ? null:
+            <View style={styles.indicatorContainer}>
+                <ActivityIndicator style={styles.indicator}/>
+                <Text>正在加载更多</Text>
+            </View>;
+    }
+    renderItem(data){
+        const item = data.item;
+        return <HomeItem
+                item={item}
+                onSelect={() => {}}
+        />
+    }
+    render() {
+    const { home } = this.props;
+    let store = this._store();
     return (
         <View style={styles.container}>
-          <Text style={styles.welcome}>{tabLaber}!</Text>
-          <Text onPress={()=>{
-            RouteUtil.goPage({},"DetailPage")
-          }}>JavaScript</Text>
+            <FlatList
+                data={store.projectModes}
+                renderItem={data => this.renderItem(data)}
+                keyExtractor={ item => "" + item.id}
+                refreshControl={
+                    <RefreshControl
+                        title='Loading'
+                        titleColor={THEME_COLOR}
+                        colors={[THEME_COLOR]}
+                        refreshing={store.isLoading}
+                        onRefresh={() => this.loadData()}
+                        tintColor={THEME_COLOR}
+                    />
+                }
+                ListFooterComponent={()=>this.genIndicator()}
+                onEndReached={() => {
+                    if (this.canLoadMore){
+                        this.loadData(true);
+                        this.canLoadMore = false;
+                    }
+                }}
+                onEndReachedThreshold={0.5}
+                onMomentumScrollBegin={() => {
+                    this.canLoadMore = true
+                }}
+            />
+            <Toast
+                ref={'toast'}
+                position={'center'}
+            />
+
         </View>
     );
   }
 }
-class Linux extends Component {
-  render() {
-    const { tabLaber } = this.props;
-    return (
-        <View style={styles.container}>
-          <Text style={styles.welcome}>{tabLaber}!</Text>
-          <Text onPress={()=>{
-            RouteUtil.goPage({},"DetailPage")
-          }}>Linux</Text>
-        </View>
-    );
-  }
-}
+const mapStateToProps = state => ({
+    home:state.home
+});
+const mapDispatchToProps = dispatch => ({
+    onLoadHomeData: (storeName,url,pageSize) => dispatch(actions.onLoadHomeData(storeName,url,pageSize)),
+    onLoadMoreHome: (storeName,pageIndex,pageSize,items,callback) => dispatch(actions.onLoadMoreHome(storeName,pageIndex,pageSize,items,callback))
+});
+
+const  HomeTabPage = connect(mapStateToProps,mapDispatchToProps)(HomeTab);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    marginTop: 10
   },
   welcome: {
     fontSize: 20,
@@ -108,5 +176,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop:6,
     marginBottom:6
-  }
+  },
+    indicatorContainer:{
+      alignItems:'center'
+    },
+    indicator:{
+        color:'red',
+        margin:10
+    }
 });

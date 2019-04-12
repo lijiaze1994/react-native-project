@@ -4,7 +4,8 @@ import reducers from '../reducer';
 import { middleware } from '../route/route';
 
 const middlewares = [
-    middleware
+    middleware,
+    thunk
 ];
 
 /**

@@ -7,83 +7,41 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import { createBottomTabNavigator,createAppContainer } from 'react-navigation';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {StyleSheet,BackHandler,ToastAndroid} from 'react-native';
+import {NavigationActions} from 'react-navigation';
 import RouteUtil from '../../route/routeUtil';
-import HomePage from './HomePage';
-import FollowPage from '../follow/FollowPage';
-import NewsPage from '../news/NewsPage';
-import MyPage from '../my/MyPage';
 import DynamicTabNavigator from '../../route/DynamicTabNavigator';
+import { connect } from 'react-redux';
 
-
-export default class BottomTabPage extends Component {
+class BottomTabPage extends Component {
   constructor(props){
     super(props);
   }
-  // _BottomTab(){
-  //   return createAppContainer(createBottomTabNavigator({
-  //       HomePage:{
-  //         screen:HomePage,
-  //         navigationOptions:{
-  //           tabBarLabel:'首页',
-  //           tabBarIcon:({tintColor,focused}) => (
-  //             <Entypo
-  //               name={'home'}
-  //               size={26}
-  //               style={{color:tintColor}}
-  //             />
-  //           )
-  //         }
-  //       },
-  //       NewsPage:{
-  //         screen:NewsPage,
-  //         navigationOptions:{
-  //           tabBarLabel:'热点',
-  //           tabBarIcon:({tintColor,focused}) => (
-  //               <MaterialIcons
-  //                   name={'whatshot'}
-  //                   size={26}
-  //                   style={{color:tintColor}}
-  //               />
-  //           )
-  //         }
-  //       },
-  //       FollowPage:{
-  //         screen:FollowPage,
-  //         navigationOptions:{
-  //           tabBarLabel:'关注',
-  //           tabBarIcon:({tintColor,focused}) => (
-  //               <AntDesign
-  //                   name={'message1'}
-  //                   size={26}
-  //                   style={{color:tintColor}}
-  //               />
-  //           )
-  //         }
-  //       },
-  //       MyPage:{
-  //         screen:MyPage,
-  //         navigationOptions:{
-  //           tabBarLabel:'我的',
-  //           tabBarIcon:({tintColor,focused}) => (
-  //               <FontAwesome5
-  //                   name={'user'}
-  //                   size={26}
-  //                   style={{color:tintColor}}
-  //               />
-  //           )
-  //         }
-  //       }
-  //   }))
-  // }
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress",this.onBackPress);
+  };
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress",this.onBackPress);
+  };
+  /**
+   * 处理物理返回键
+   */
+  onBackPress = () => {
+    const { dispatch ,nav } = this.props;
+    if(nav.routes[1].index === 0){
+      // 5s内按两次物理返回键退出应用
+      if (this.lastBackPressed && this.lastBackPressed + 5000 > Date.now()){
+          return false;
+      }
+      this.lastBackPressed = Date.now();
+      ToastAndroid.show('再按一次退出应用',ToastAndroid.SHORT)
+    }
+    dispatch(NavigationActions.back());
+    return true;
+  };
+
   render() {
     RouteUtil.navigation = this.props.navigation;
-    // const Tab = this._BottomTab();
     return <DynamicTabNavigator />;
   }
 }
@@ -106,3 +64,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const mapStateToProps = state =>({
+  nav:state.nav
+});
+export default connect(mapStateToProps)(BottomTabPage);

@@ -11,6 +11,7 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import actions from "../../action";
+import RouteUtil from "../../route/routeUtil";
 
 class MyPage extends Component {
 
@@ -23,6 +24,15 @@ class MyPage extends Component {
         }}>
           改变底部颜色
         </Text>
+          <Text onPress={()=>{
+              RouteUtil.goPage({},"DetailPage")
+          }}>ReactNative</Text>
+          <Text onPress={()=>{
+              RouteUtil.goPage({},"FetchDemoPage")
+          }}>Fetch Demo</Text>
+          <Text onPress={()=>{
+              RouteUtil.goPage({},"DataStorePage")
+          }}>DataStorePage Demo</Text>
       </View>
     );
   }

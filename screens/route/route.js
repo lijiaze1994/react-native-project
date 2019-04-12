@@ -11,6 +11,8 @@ import {
 import WelcomePage from "../page/welcome/WelcomePage";
 import BottomTabPage from "../page/home/BottomTabPage";
 import DetailPage from "../page/detail/DetailPage";
+import FetchDemoPage from "../page/fetch/FetchDemoPage";
+import DataStorePage from "../page/fetch/DataStorePage";
 import {connect } from "react-redux";
 import { createReactNavigationReduxMiddleware,createReduxContainer} from 'react-navigation-redux-helpers';
 export const rootCom = 'Init'; //设置跟路由
@@ -34,9 +36,15 @@ const MainNavigator = createStackNavigator({
     },
     DetailPage:{
         screen: DetailPage,
-        navigationOptions: {
-
-        }
+        navigationOptions: {}
+    },
+    FetchDemoPage:{
+        screen: FetchDemoPage,
+        navigationOptions:{}
+    },
+    DataStorePage:{
+        screen: DataStorePage,
+        navigationOptions:{}
     }
 });
 

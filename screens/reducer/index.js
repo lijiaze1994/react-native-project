@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import theme from './theme';
+import home from './home';
 import { rootCom,RootNavigator} from "../route/route";
 
 /**
@@ -23,6 +24,7 @@ const navReducer = (state = navState,action)=>{
 const index = combineReducers({
     nav: navReducer,
     theme:theme,
+    home:home
 });
 
 export default index;
